@@ -2,7 +2,7 @@
   hosts: web
   become: yes
   vars:
-  - vars.files
+  - main.yaml
   tasks:
   - name: install mysql-server
     ansible.builtin.dnf:
