@@ -11,13 +11,13 @@
         name: mysql-server
         state: latest
 
-    # - name: install libraies and depenencies og pymysql
-    #   ansible.builtin.pip:
-    #     name:
-    #     - PyMysql
-    #     - cryptography
-    #     executable: pip3.9 # this is python version
-       
+     - name: install libraies and depenencies og pymysql
+       ansible.builtin.pip:
+        name:
+        - PyMysql
+        - cryptography
+        executable: pip3.9 # this is python version
+      
       
     - name: Start and enable MySQL server
       ansible.builtin.service:
