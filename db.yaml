@@ -1,32 +1,46 @@
-- name: congigure the db server
+- name: configure the db server
   hosts: db
   become: yes
   vars:
-    login_user: root
-    login_password: ExpenseApp@1
     login_host: db.srikantheswar.online
+  vars_prompt:
+    - name: sql_root_password
+      prompt: "Enter the MySQL root password"
+      private: no
 
   tasks:
-  - name: install mysql-server
-    ansible.builtin.dnf:
-      name: mysql-server
-      state: latest
-  - name: start mysql service
-    ansible.builtin.service:
-      name: mysqld
-      state: started
-      enabled: yes
-  - name: set up  root paasword is yes or no
-    community.mysql.mysql_info:
-      login_user: "{{login_user}}"
-      login_password: "{{login_password}}"
-      login_host: "{{login_host}}"
-      filter: version
-    register: password.root
-    ignore_errors: true
+    - name: Install MySQL server
+      ansible.builtin.dnf:
+        name: mysql-server
+        state: latest
 
-  - name: printh the info
-    ansible.builtin.debug:
-      msg: "info {{password.root}}"
+    # - name: install libraies and depenencies og pymysql
+    #   ansible.builtin.pip:
+    #     name:
+    #     - PyMysql
+    #     - cryptography
+    #     executable: pip3.9 # this is python version
+       
+      
+    - name: Start and enable MySQL server
+      ansible.builtin.service:
+        name: mysqld
+        state: started
+        enabled: yes
 
+    - name: Check if root password is set
+      community.mysql.mysql_info:
+        login_user: "root"
+        login_password: "{{ sql_root_password }}"
+        login_host: "{{ login_host }}"
+        filter: version
+      register: my_sql_password
+      ignore_errors: true
 
+    - name: Debug MySQL password info
+      ansible.builtin.debug:
+        msg: "{{ my_sql_password }}"
+
+    # - name: Set root password if not already set
+    #   ansible.builtin.command: "mysql_secure_installation --set-root-pass {{ sql_root_password }}"
+    #   when: my_sql_password.failed is true
