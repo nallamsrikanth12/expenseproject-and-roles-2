@@ -3,11 +3,6 @@
   become: yes
   vars:
     login_host: db.srikantheswar.online
-  vars_prompt:
-    - name: sql_root_password
-      prompt: "Enter the MySQL root password"
-      private: no
-
   tasks:
     - name: Install MySQL server
       ansible.builtin.dnf:
