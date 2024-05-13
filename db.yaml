@@ -23,6 +23,7 @@
       login_host: "{{login_host}}"
       filter: version
     register: password.root
+    ignore_errors: true
 
   - name: printh the info
     ansible.builtin.debug:
