@@ -3,6 +3,8 @@
   become: yes
   vars:
     login_host: db.srikantheswar.online
+    sql_root_password: ExpenseApp@1
+
   tasks:
     - name: Install MySQL server
       ansible.builtin.dnf:
