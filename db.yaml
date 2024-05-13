@@ -2,7 +2,10 @@
   hosts: web
   become: yes
   vars:
-  - main.yaml
+    login_user: root
+    login_password: ExpenseApp@1
+    login_host: db.srikantheswar.online
+
   tasks:
   - name: install mysql-server
     ansible.builtin.dnf:
