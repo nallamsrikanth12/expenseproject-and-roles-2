@@ -1,0 +1,20 @@
+- name: configure the backend server
+  hosts: backend
+  become: yes
+  vars:
+
+  tasks:
+  - name: disble the nodesjs
+    ansible.builtin.command: " dnf module disable nodejs -y"
+
+
+  - name: enable the nodejs 20
+    ansible.builtin.command: " dnf module enable nodejs:20 -y "
+      name: nodejs
+      state: latest
+
+  - name: create a user
+    ansible.builtin.user:
+      name: expense
+
+  
