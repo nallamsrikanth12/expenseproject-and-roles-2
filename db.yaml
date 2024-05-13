@@ -1,0 +1,28 @@
+- name: congigure the db server
+  hosts: web
+  become: yes
+  vars:
+  - vars_files
+  tasks:
+  - name: install mysql-server
+    ansible.builtin.dnf:
+      name: mysql-server
+      state: latest
+  - name: start mysql service
+    ansible.builtin.service:
+      name: mysqld
+      state: started
+      enabled: yes
+  - name: set up  root paasword is yes or no
+    community.mysql.mysql_info:
+      login_user: "{{login_user}}"
+      login_password: "{{login_password}}"
+      login_host: "{{login_host}}"
+      filter: version
+    register: password.root
+
+  - name: printh the info
+    ansible.builtin.debug:
+      msg: "info {{password.root}}"
+
+
