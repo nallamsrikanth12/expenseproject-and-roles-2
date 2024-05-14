@@ -47,6 +47,13 @@
       name: mysql
       state: latest
 
+  - name: install libraries and dependencies
+    ansible.builtin.pip:
+      name:
+      - pymysql
+      - cryptography
+      executable: pip3.9
+
   - name: import the data
     community.mysql.mysql_db:
       state: import
