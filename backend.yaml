@@ -42,6 +42,35 @@
       src: backend.service
       dest: /etc/systemd/system/backend.service
 
+  - name: install mysql
+    ansible.builtin.dnf:
+      name: mysql
+      state: latest
+
+  - name: import the data
+    community.mysql.mysql_db:
+      state: import
+      name: all
+      login_host: db.srikantheswar.online
+      login_password: ExpenseApp@1
+      login_user: root
+      target: /app/schema/backend.sql
+
+
+
+
+  - name: daemon reload
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+
+
+
+  - name: restart the service
+    ansible.builtin.service:
+      name: backend
+      state: started
+      enabled: yes
+
 
       
 
