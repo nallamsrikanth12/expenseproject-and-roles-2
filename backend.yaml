@@ -39,7 +39,9 @@
 
   - name: copy the backendserive
     ansible.builtin.copy:
-    src: 
+    src: /home/ec2-user/expenseproject-and-roles-2/backend.service
+    dest: /etc/systemd/system/backend.service
+
 
       
 
