@@ -13,8 +13,11 @@
   
   - name: install nodejs
     ansible.builtin.dnf:
-      name: nodejs
+      name: "{{ item }}"
       state: latest
+    loop:
+    - nodejs
+    - mysql
 
   - name: create a user
     ansible.builtin.user:
@@ -41,11 +44,6 @@
     ansible.builtin.copy:
       src: backend.service
       dest: /etc/systemd/system/backend.service
-
-  - name: install mysql
-    ansible.builtin.dnf:
-      name: mysql
-      state: latest
 
   - name: install libraries and dependencies
     ansible.builtin.pip:
