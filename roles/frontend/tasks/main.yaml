@@ -12,21 +12,7 @@
       state: started
       enabled: yes
 
-  - name: delete the file
-    ansible.builtin.file:
-      path: "{{ app_location }}"
-      state: absent
-
-  - name: create the html directory
-    ansible.builtin.file:
-      path: "{{ app_location }}"
-      state: directory
-
-  - name: download code and unzip the code
-    ansible.builtin.unarchive:
-      src: "https://expense-builds.s3.us-east-1.amazonaws.com/expense-{{component}}-v2.zip"
-      dest: "{{ app_location }}"
-      remote_src: yes
+  
 
   - name: copy the code
     ansible.builtin.template:

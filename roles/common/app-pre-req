@@ -1,15 +1,15 @@
 - name: delete the file
   ansible.builtin.file:
-    path: /usr/share/nginx/html
+    path: "{{ app_location }}"
     state: absent
 
 - name: create the html directory
   ansible.builtin.file:
-    path: /usr/share/nginx/html
+    path: "{{ app_location }}"
     state: directory
 
 - name: download code and unzip the code
   ansible.builtin.unarchive:
     src: "https://expense-builds.s3.us-east-1.amazonaws.com/expense-{{ component }}-v2.zip"
-    dest: /usr/share/nginx/html
+    dest: "{{ app_location }}"
     remote_src: yes
