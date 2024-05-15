@@ -1,0 +1,5 @@
+- name: configure the frontend server
+  become: yes
+  hosts: "{{ component }}"
+  roles:
+  - "{{ component }}"
