@@ -1,34 +1,39 @@
-- name: install the nginx
-  ansible.builtin.dnf:
-    name: nginx
-    state: latest
+- hosts: your_target_hosts
+  vars:
+    component: frontend
+    app_location: /usr/share/nginx/html
 
-- name: start and enabled service
-  ansible.builtin.service:
-    name: nginx
-    state: started
-    enabled: yes
+  tasks:
+    - name: install the nginx
+      ansible.builtin.dnf:
+        name: nginx
+        state: latest
 
-- name: delete the file
-  ansible.builtin.file:
-    path: "{{ app_location }}"
-    state: absent
+    - name: start and enable service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
 
-- name: create the html directory
-  ansible.builtin.file:
-    path: "{{ app_location }}"
-    state: directory
+    - name: delete the file
+      ansible.builtin.file:
+        path: "{{ app_location }}"
+        state: absent
 
-- name: download code and unzip the code
-  ansible.builtin.unarchive:
-    src: "https://expense-builds.s3.us-east-1.amazonaws.com/expense-{{component}}-v2.zip"
-    dest: "{{ app_location }}"ansible 
-    remote_src: yes
+    - name: create the html directory
+      ansible.builtin.file:
+        path: "{{ app_location }}"
+        state: directory
 
-- name: copy the code
-  ansible.builtin.template:
-    src: expense.conf.j2
-    dest: /etc/nginx/default.d/expense.conf
+    - name: download code and unzip the code
+      ansible.builtin.unarchive:
+        src: "https://expense-builds.s3.us-east-1.amazonaws.com/expense-{{component}}-v2.zip"
+        dest: "{{ app_location }}"
+        remote_src: yes
 
-  notify:
-  - restarted nginx
+    - name: copy the code
+      ansible.builtin.template:
+        src: expense.conf.j2
+        dest: /etc/nginx/default.d/expense.conf
+      notify:
+        - restarted nginx
