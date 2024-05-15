@@ -5,4 +5,3 @@ keyed_groups:
 - key: tags['Name']
   prefix: ''
   parent_group: ''
-
