@@ -1,82 +1,77 @@
+
 - name: configure the backend server
   hosts: backend
   become: yes
   vars:
+    mysql_root_password: ExpenseApp@1
+    login_host: db.srikantheswar.online
 
   tasks:
-  - name: disble the nodesjs
-    ansible.builtin.command: " dnf module disable nodejs -y"
-
-
-  - name: enable the nodejs 20
-    ansible.builtin.command: " dnf module enable nodejs:20 -y "
+  - name: disable nodejs
+    ansible.builtin.command: dnf module disable nodejs -y
   
+  - name: enable the nodejs:20
+    ansible.builtin.command: dnf module enable nodejs:20 -y
+
   - name: install nodejs
     ansible.builtin.dnf:
-      name: "{{ item }}"
+      name: "{{item}}"
       state: latest
     loop:
-    - nodejs
-    - mysql
+      - nodejs
+      - mysql
+
+  - name: install python and mysql dependencies
+    ansible.builtin.pip:
+      name: 
+      - PyMysql
+      - cryptography
+      executable: pip3.9 
 
   - name: create a user
     ansible.builtin.user:
       name: expense
-
-
-  - name: create a app directory
+  
+  - name: create a directiory
     ansible.builtin.file:
       path: /app
       state: directory
 
-  - name: download code and unzip the code
+  - name: download the backend code
+    ansible.builtin.get_url:
+      url: https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
+      dest: /tmp/backend.zip
+  
+  - name: unzip the backendcode
     ansible.builtin.unarchive:
-      src: https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
+      src: /tmp/backend.zip
       dest: /app
       remote_src: yes
-  
-  - name: change app directory
-    ansible.builtin.command: " npm install "
+  - name: install npm
+    ansible.builtin.command: npm install
     args:
       chdir: /app
 
-  - name: copy the backendserive
+  - name: copy the backend.service
     ansible.builtin.copy:
       src: backend.service
       dest: /etc/systemd/system/backend.service
+  
 
-  - name: install libraries and dependencies
-    ansible.builtin.pip:
-      name:
-      - pymysql
-      - cryptography
-      executable: pip3.9
-
-  - name: import the data
+  - name: load schema
     community.mysql.mysql_db:
-      state: import
-      name: all
-      login_host: db.srikantheswar.online
-      login_password: ExpenseApp@1
       login_user: root
+      login_password: "{{mysql_root_password}}"
+      login_host: "{{login_host}}"
+      name: all
       target: /app/schema/backend.sql
+      state: import
 
-
-
-
-  - name: daemon reload
+  - name: system daemon reload
     ansible.builtin.systemd_service:
       daemon_reload: true
-
-
-
-  - name: restart the service
+  - name: start service and enabled
     ansible.builtin.service:
       name: backend
       state: started
       enabled: yes
-
-
-      
-
-  
