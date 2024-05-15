@@ -1,0 +1,4 @@
+- name: install the gcc
+  ansible.builtin.dnf:
+    name: gcc
+    state: latest
